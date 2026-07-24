@@ -51,7 +51,7 @@ One consequence: two escalations for the same chapter on the same date land in t
 - `kb_access.load_escalation_report(folder)` — parses one escalation into header + per-attempt records + sibling filenames, and always returns `raw_report` as a complete fallback if parsing misses.
 - `kb_access.list_all_run_records()` — pulls `run.json` from here too, so escalated runs count toward KB-wide cost totals. Deduped by `run_id`: a chapter currently in escalated state has the same run present in both `run/{stage}/` and here, and it is counted once.
 
-Because header parsing is regex-based on `report.md`, **do not reformat or hand-edit `report.md`.** Breaking the `**Field:** value` header shape makes the escalation invisible to the dashboard's identifier columns. Delete a stale escalation folder outright rather than editing it — but note that also deletes that run's cost record unless it also exists in `run_history/`.
+Because header parsing is regex-based on `report.md`, **do not reformat or hand-edit `report.md`.** Breaking the `**Field:** value` header shape makes the escalation invisible to the dashboard's identifier columns. Delete a stale escalation folder outright rather than editing it — but note that also deletes that run's only surviving cost record.
 
 ## Written by
 

@@ -57,7 +57,7 @@ git lfs install
 
 ---
 
-## The six directories
+## The five directories
 
 ```
 q-matrix-kb-template/
@@ -66,9 +66,13 @@ q-matrix-kb-template/
 ├── prompt-library/     ← generation prompts. System-generated (seedable by hand).
 ├── curriculum-docs/    ← board syllabus / LO documents. YOU SUPPLY.
 ├── textbooks/          ← chapter PDFs (YOU SUPPLY) + all per-chapter generated output.
-├── escalations/        ← dated failure snapshots. System-generated.
-└── run_history/        ← archived superseded run records. System-generated.
+└── escalations/        ← dated failure snapshots. System-generated.
 ```
+
+The agents also recognise a sixth top-level directory, `run_history/`, which
+archives run records recovered from earlier git commits. It is deliberately absent
+here: it is a recovery mechanism for a KB that already has history, not part of the
+starting structure. `skills/kb_access.py` creates it on demand if it is ever needed.
 
 | Directory | Populated by | Read by | Written by |
 |---|---|---|---|
@@ -82,7 +86,6 @@ q-matrix-kb-template/
 | `textbooks/.../confirmed_curriculum.csv` | System | Prerequisite L2/L3, analytics | Orchestrator (final output) |
 | `textbooks/.../run/{stage}/` | System | Dashboard / analytics | Orchestrator |
 | `escalations/` | System | Dashboard / analytics | Orchestrator |
-| `run_history/` | System | Analytics | Recovery tooling |
 
 Each directory has its own `README.md` with the exact naming convention, file formats, and read/write ownership. Read those before populating.
 

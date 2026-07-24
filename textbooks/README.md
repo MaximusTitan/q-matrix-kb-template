@@ -37,7 +37,7 @@ textbooks/EXAMPLE_BOARD/EXAMPLE_SUBJECT/Grade 8/Chapter01_Example_Chapter_Title/
 
 Grade folders use `Grade` + space + number. Board and subject folder names are the exact CLI strings. Chapter folders use `Chapter{N}_{Title_With_Underscores}` — see the root README for the full rule, including the Windows-illegal characters to avoid.
 
-The chapter folder name **is** the `chapter` identifier that appears in every generated CSV row. Renaming a chapter folder after a run orphans that chapter's `run_history/` and `escalations/` entries — they are keyed by name, not by ID.
+The chapter folder name **is** the `chapter` identifier that appears in every generated CSV row. Renaming a chapter folder after a run orphans that chapter's `escalations/` entries — they are keyed by name, not by ID.
 
 This directory is also the KB's inventory: `list_textbook_chapters()` enumerates chapters by walking exactly this tree, and pipeline status is inferred from file presence, not from any manifest.
 
@@ -131,7 +131,7 @@ Contents:
 
 Read back by `load_run_record()` and `load_run_artifact()`, which feed the dashboard and analytics. `load_run_artifact` enforces a strict filename whitelist (`^[A-Za-z0-9_]+\.(csv|md|json)$`) because the filename arrives from an API query parameter — so do not add files here whose names fall outside that alphabet; they will be unreadable through the API.
 
-`run/` is a working directory, not an archive. Records that would be lost to overwrite are preserved in `escalations/` (failures, by date) and `run_history/` (superseded runs, by `run_id`).
+`run/` is a working directory, not an archive. Records that would be lost to overwrite are preserved in `escalations/` (failures, by date).
 
 ## Rights
 

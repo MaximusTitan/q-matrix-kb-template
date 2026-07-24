@@ -62,6 +62,6 @@ Nothing about Q-Matrix requires a public KB. This template is public so the *str
 
 - **Git LFS first.** `.gitattributes` routes `*.pdf` through LFS. Run `git lfs install` before adding a PDF. A PDF committed as a plain blob is in history for good short of a rewrite.
 - **Naming conventions are not validated by code.** Follow them exactly: `Grade 8` (with the space), board/subject folders matching the CLI strings verbatim, chapters as `Chapter{N}_{Title_With_Underscores}` with no Windows-illegal characters (`: / \ * ? " < > |`, trailing dots, trailing spaces). See the root `README.md`.
-- **Do not PR generated output.** `prompt-library/`, `concept-skill-map.json`, `confirmed_curriculum.csv`, `run/`, `escalations/`, and `run_history/` are agent-written. They belong in your own KB clone, not in this template.
+- **Do not PR generated output.** `prompt-library/`, `concept-skill-map.json`, `confirmed_curriculum.csv`, `run/`, and `escalations/` are agent-written. They belong in your own KB clone, not in this template.
 - **Do not include the `EXAMPLE_BOARD` trees in a data PR.** They are shape demos meant to be deleted downstream.
 - **State the provenance** of every file you add: where it came from, and the specific license or permission that covers it. A URL is provenance; it is not a license.
