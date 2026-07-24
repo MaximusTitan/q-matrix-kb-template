@@ -1,0 +1,187 @@
+# q-matrix-kb-template
+
+> Empty knowledge-base skeleton for the Q-Matrix curriculum generation system — pairs with [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents).
+
+This repository is the **structure** of the Q-Matrix data layer, with none of the data. It contains directories, `.gitkeep` files, `README.md` files, and one seeded ruleset. It contains no code, no secrets, and **no curriculum material of any kind**.
+
+**This repo ships empty on purpose.** There is no example board, no sample textbook, no demo CSV. Q-Matrix reads curriculum material that you supply, and curriculum material is almost always someone else's copyright. Shipping a "starter dataset" would mean redistributing it. So the first-run experience is: clone this, then put your own material in.
+
+---
+
+## What Q-Matrix Does
+
+Given curriculum documentation from an education board, Q-Matrix produces a validated curriculum CSV that maps:
+
+```
+Board → Subject → Grade → Chapter → Concept → Skill
+```
+
+plus prerequisite links at three levels (L1 within a chapter, L2 across chapters in a grade, L3 across earlier grades).
+
+This knowledge base holds the inputs the agents read and accumulates the outputs they write.
+
+---
+
+## Rights notice — read before you add anything
+
+You are responsible for the legal status of every file you put in your clone of this repo.
+
+- Supply only curriculum material you **hold or have been granted the right to use** in this way — and, if your clone is public or shared, the right to **redistribute**.
+- **"Freely accessible" is not "freely redistributable."** Official education-board material — syllabus documents, learning-outcome documents, prescribed textbooks — is very often downloadable at no cost from a government or board website and still under copyright, with no license permitting you to republish it. A public download link is not a redistribution grant.
+- If your material is accessible-but-not-redistributable: **keep your clone private, or keep those files untracked.** That is a fully supported way to run Q-Matrix. Nothing in the pipeline requires the KB to be public.
+- Q-Matrix generates derived artifacts (concept-skill maps, CSVs, prompts) from your inputs. Derived output does not launder the rights of the input — check before you publish those either.
+
+No file in this template repo is board or publisher material.
+
+---
+
+## How it pairs with q-matrix-agents
+
+The code lives in `q-matrix-agents`. It resolves every KB path from a single environment variable, `KB_ROOT` (see `skills/kb_access.py` there — it is the only module that knows this folder layout).
+
+```bash
+git clone https://github.com/<you>/q-matrix-kb-template.git ~/q-matrix-kb
+# then in the q-matrix-agents repo's .env:
+KB_ROOT=/absolute/path/to/your/q-matrix-kb
+```
+
+Point `KB_ROOT` at your clone of **this** repo. Rename the clone to whatever you like — the name is not load-bearing, only the path in `KB_ROOT` is.
+
+### Git LFS — set this up first
+
+Chapter and curriculum PDFs are large binaries. `.gitattributes` in this repo already routes `*.pdf` through Git LFS. Install and initialize LFS **before** you add your first PDF — a PDF committed as a normal blob stays in history as a normal blob, and pulling it back out is a history rewrite.
+
+```bash
+git lfs install
+```
+
+---
+
+## The six directories
+
+```
+q-matrix-kb-template/
+│
+├── rulesets/           ← eval rules. universal_rules.md is seeded; grade rules are generated.
+├── prompt-library/     ← generation prompts. System-generated (seedable by hand).
+├── curriculum-docs/    ← board syllabus / LO documents. YOU SUPPLY.
+├── textbooks/          ← chapter PDFs (YOU SUPPLY) + all per-chapter generated output.
+├── escalations/        ← dated failure snapshots. System-generated.
+└── run_history/        ← archived superseded run records. System-generated.
+```
+
+| Directory | Populated by | Read by | Written by |
+|---|---|---|---|
+| `rulesets/universal_rules.md` | **You** (seeded here) | Eval, Judge, Generator (cold start) | Human, manually |
+| `rulesets/{board}/{subject}/{grade}/rules.md` | System | Eval, Judge | `orchestrator.py --reject --reason ...` |
+| `prompt-library/` | System | Generator | Revision Agent output, via `kb_access.save_prompt` |
+| `curriculum-docs/` | **You** | Generator | Nothing — inputs only |
+| `textbooks/.../chapter.pdf` | **You** | Map Extraction Agent | Nothing — inputs only |
+| `textbooks/.../extraction_guidance.md` | System | Map Extraction Agent | `orchestrator.py --re-extract --map-guidance ...` |
+| `textbooks/.../concept-skill-map.json` | System | Generator, Eval, Doctor | Map Extraction Agent |
+| `textbooks/.../confirmed_curriculum.csv` | System | Prerequisite L2/L3, analytics | Orchestrator (final output) |
+| `textbooks/.../run/{stage}/` | System | Dashboard / analytics | Orchestrator |
+| `escalations/` | System | Dashboard / analytics | Orchestrator |
+| `run_history/` | System | Analytics | Recovery tooling |
+
+Each directory has its own `README.md` with the exact naming convention, file formats, and read/write ownership. Read those before populating.
+
+---
+
+## Naming conventions
+
+These are enforced by convention, not by code validation. Get them wrong and the pipeline silently looks in the wrong place.
+
+**Grades — `Grade` + a space + the number.**
+
+```
+Grade 8
+Grade 10
+```
+
+The space is required. This is what the existing KB uses. `_grade_sort_key` in `kb_access.py` orders grades on the **trailing integer**, so a folder with no trailing digits (e.g. `Kindergarten`) sorts before everything and will not be treated as a later grade by the L3 prerequisite scan.
+
+**Boards and subjects — the exact string you pass on the CLI.**
+
+```
+EXAMPLE_BOARD/EXAMPLE_SUBJECT/
+CBSE/Science/
+CBSE/Environmental Science/
+```
+
+Spaces are fine. Case matters. `--subject Science` will not find a folder named `science`.
+
+**Chapters — `Chapter{N}_{Title_With_Underscores}`.**
+
+```
+Chapter04_Exploring_Forces
+Chapter10_Sound
+```
+
+Zero-padding is optional and is inconsistent in real use; pick one style per subject and stay with it. **Avoid `:` `/` `\` `*` `?` `"` `<` `>` `|` in chapter names** — they are illegal in Windows filenames and will break the repo for anyone on Windows. Avoid trailing dots and spaces for the same reason.
+
+The chapter folder name is also the `chapter` identifier written into every generated CSV. It does not need to match the chapter's printed title.
+
+---
+
+## Subject aliasing for L3 prerequisites
+
+`_PREREQ_SUBJECT_ALIASES` in `kb_access.py` lets one subject borrow earlier grades from another when scanning for **L3 (cross-grade) prerequisites only**. As shipped:
+
+```python
+_PREREQ_SUBJECT_ALIASES = {
+    "Science": ("Environmental Science",),
+}
+```
+
+Rationale: CBSE starts `Science` as its own subject at Grade 6, while Grades 3–5 cover the same introductory ground as `Environmental Science`, so EVS grades are valid prerequisite sources for early Science grades.
+
+This is a **configuration constant in code**, not a filesystem convention and not automatic behaviour. If your board splits or renames subjects across grades, edit that dict in `q-matrix-agents`. It does not affect L1 or L2, which stay exact-match on subject.
+
+---
+
+## Quickstart
+
+```bash
+# 0. Install Git LFS before any PDF exists in the repo.
+git lfs install
+
+# 1. Get the skeleton.
+git clone https://github.com/<you>/q-matrix-kb-template.git ~/q-matrix-kb
+cd ~/q-matrix-kb
+
+# 2. Delete the shape-demo tree. It is documentation, not data.
+rm -rf */EXAMPLE_BOARD
+
+# 3. Supply YOUR curriculum material. Nothing works until this step is done.
+#    Material you have the right to use — see the rights notice above.
+mkdir -p "curriculum-docs/CBSE/Science/Grade 8"
+cp ~/my-syllabus.pdf "curriculum-docs/CBSE/Science/Grade 8/"
+
+mkdir -p "textbooks/CBSE/Science/Grade 8/Chapter10_Sound"
+cp ~/my-chapter.pdf "textbooks/CBSE/Science/Grade 8/Chapter10_Sound/chapter.pdf"
+
+# 4. Point the code at this clone.
+#    In the q-matrix-agents repo, .env:
+#      KB_ROOT=/Users/you/q-matrix-kb
+
+# 5. Run the pipeline from q-matrix-agents.
+python orchestrator.py --board CBSE --subject "Science" \
+    --grade "Grade 8" --chapter "Chapter10_Sound"
+```
+
+Step 3 is the whole point. `rulesets/universal_rules.md` is the only content this repo gives you; everything else is yours to bring.
+
+Outputs land back in this repo: `concept-skill-map.json` and `confirmed_curriculum.csv` in the chapter folder, run artifacts under `run/{stage}/`, prompts under `prompt-library/`, and a dated snapshot under `escalations/` if the run fails all its cycles.
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: curriculum-data contributions need a rights attestation and belong here; pipeline and code contributions belong in [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents).
+
+---
+
+## Related
+
+- **[q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents)** — orchestrator, agents, skills, dashboard (the code layer)
