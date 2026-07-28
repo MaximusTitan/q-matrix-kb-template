@@ -6,6 +6,10 @@ This repository is the **structure** of the Q-Matrix data layer, with none of th
 
 **This repo ships empty on purpose.** There is no example board, no sample textbook, no demo CSV. Q-Matrix reads curriculum material that you supply, and curriculum material is almost always someone else's copyright. Shipping a "starter dataset" would mean redistributing it. So the first-run experience is: clone this, then put your own material in.
 
+## Paper
+
+This repo implements the data schema and template described in *Curriculum Brain: A Semi-Automated Framework for Q-Matrix Creation* — [read the draft](https://prickly-gopher-95e.notion.site/Curriculum-Brain-3a3527ed7aee80cc97f7ee52e302249e).
+
 ---
 
 ## What Q-Matrix Does
@@ -188,3 +192,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: curriculum-data contribut
 ## Related
 
 - **[q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents)** — orchestrator, agents, skills, dashboard (the code layer)
+- **[q-matrix-graph-template](https://github.com/MaximusTitan/q-matrix-graph-template)** — 3D viewer for the knowledge graph exported from a KB built on this template
+- **[q-matrix-dataset](https://github.com/MaximusTitan/q-matrix-dataset)** — a released, point-in-time snapshot of curriculum data produced by a KB built on this template
