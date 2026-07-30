@@ -2,9 +2,25 @@
 
 > Empty knowledge-base skeleton for the Q-Matrix curriculum generation system — pairs with [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents).
 
-This repository is the **structure** of the Q-Matrix data layer, with none of the data. It contains directories, `.gitkeep` files, `README.md` files, and one seeded ruleset. It contains no code, no secrets, and **no curriculum material of any kind**.
+This repository is the **structure** of the Q-Matrix data layer, with none of the data. It contains directories, `.gitkeep` files, per-directory `README.md` files, a set of `_PLACEHOLDER_README.md` notes, and one seeded ruleset (`rulesets/universal_rules.md`). It contains no code, no secrets, and **no curriculum material of any kind**.
 
-**This repo ships empty on purpose.** There is no example board, no sample textbook, no demo CSV. Q-Matrix reads curriculum material that you supply, and curriculum material is almost always someone else's copyright. Shipping a "starter dataset" would mean redistributing it. So the first-run experience is: clone this, then put your own material in.
+**This repo ships empty on purpose.** No textbook, no syllabus document, no generated CSV. Every directory carries an `EXAMPLE_BOARD/EXAMPLE_SUBJECT/Grade 8/` tree, but those folders are a *shape demo* — deliberately fake names holding nothing but `.gitkeep` and a placeholder note, so the layout is unmistakable on first clone. You delete them (see [Quickstart](#quickstart) step 2). Q-Matrix reads curriculum material that you supply, and curriculum material is almost always someone else's copyright. Shipping a "starter dataset" would mean redistributing it. So the first-run experience is: clone this, then put your own material in.
+
+---
+
+## Using this repo, and where to contribute
+
+**This is a template — cloning or forking it to build your own knowledge base is exactly what it is for.** That is the intended path, not a workaround. Take it, rename it, add directories, strip the parts you don't need.
+
+It is open source and free to use, fork, and modify under its license (see [License](#license)). It is **not currently accepting pull requests**. That is a maintenance decision, not a closed door: the layout documented here is owned by `skills/kb_access.py` in [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents), so structural changes start there and land here afterwards — never the other way round.
+
+**If you want to contribute to Q-Matrix, [q-matrix-dataset](https://github.com/MaximusTitan/q-matrix-dataset) is the repo that is open for it.** Curriculum data contributions belong there, under its rights and attestation rules. Issues on this repo are open if you spot something wrong in these docs.
+
+Forking the *structure* is free. What you put into your fork is a separate question — see the rights notice below.
+
+## Paper
+
+This repo is the data layer of the system described in *Curriculum Brain: A Semi-Automated Framework for Q-Matrix Creation* — [read the draft](https://prickly-gopher-95e.notion.site/Curriculum-Brain-3a3527ed7aee80cc97f7ee52e302249e).
 
 ---
 
@@ -28,6 +44,7 @@ You are responsible for the legal status of every file you put in your clone of 
 
 - Supply only curriculum material you **hold or have been granted the right to use** in this way — and, if your clone is public or shared, the right to **redistribute**.
 - **"Freely accessible" is not "freely redistributable."** Official education-board material — syllabus documents, learning-outcome documents, prescribed textbooks — is very often downloadable at no cost from a government or board website and still under copyright, with no license permitting you to republish it. A public download link is not a redistribution grant.
+- **Absence of a stated license is a "no", not a "maybe".** If you cannot find the actual license or terms covering a document, treat it as not redistributable. "It was on the internet for free" is not a license, and neither is "it's for education".
 - If your material is accessible-but-not-redistributable: **keep your clone private, or keep those files untracked.** That is a fully supported way to run Q-Matrix. Nothing in the pipeline requires the KB to be public.
 - Q-Matrix generates derived artifacts (concept-skill maps, CSVs, prompts) from your inputs. Derived output does not launder the rights of the input — check before you publish those either.
 
@@ -40,7 +57,8 @@ No file in this template repo is board or publisher material.
 The code lives in `q-matrix-agents`. It resolves every KB path from a single environment variable, `KB_ROOT` (see `skills/kb_access.py` there — it is the only module that knows this folder layout).
 
 ```bash
-git clone https://github.com/<you>/q-matrix-kb-template.git ~/q-matrix-kb
+# Clone the upstream skeleton — or swap in your own fork, which is the usual move.
+git clone https://github.com/MaximusTitan/q-matrix-kb-template.git ~/q-matrix-kb
 # then in the q-matrix-agents repo's .env:
 KB_ROOT=/absolute/path/to/your/q-matrix-kb
 ```
@@ -150,7 +168,8 @@ This is a **configuration constant in code**, not a filesystem convention and no
 git lfs install
 
 # 1. Get the skeleton.
-git clone https://github.com/<you>/q-matrix-kb-template.git ~/q-matrix-kb
+# Clone the upstream skeleton — or swap in your own fork, which is the usual move.
+git clone https://github.com/MaximusTitan/q-matrix-kb-template.git ~/q-matrix-kb
 cd ~/q-matrix-kb
 
 # 2. Delete the shape-demo tree. It is documentation, not data.
@@ -179,12 +198,17 @@ Outputs land back in this repo: `concept-skill-map.json` and `confirmed_curricul
 
 ---
 
-## Contributing
+## License
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Short version: curriculum-data contributions need a rights attestation and belong here; pipeline and code contributions belong in [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents).
+**Apache License 2.0**, Copyright 2026 Intelliana — see [LICENSE](./LICENSE). Same license as the sibling code repos, [q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents) and [q-matrix-graph-template](https://github.com/MaximusTitan/q-matrix-graph-template). ([q-matrix-dataset](https://github.com/MaximusTitan/q-matrix-dataset) is CC BY-SA 4.0 instead, because it ships data rather than code.)
+
+The license covers the *skeleton* only — the directories, docs, and `rulesets/universal_rules.md`. It says nothing about curriculum material you add to your own clone; that keeps whatever rights its own rights holder gave it.
 
 ---
 
 ## Related
 
 - **[q-matrix-agents](https://github.com/MaximusTitan/q-matrix-agents)** — orchestrator, agents, skills, dashboard (the code layer)
+- **[q-matrix-dataset](https://github.com/MaximusTitan/q-matrix-dataset)** — the published curriculum dataset, and **the repo open for contributions**
+- **[q-matrix-graph-template](https://github.com/MaximusTitan/q-matrix-graph-template)** — 3D knowledge-graph viewer for a curriculum export
+- **[Curriculum Brain (paper draft)](https://prickly-gopher-95e.notion.site/Curriculum-Brain-3a3527ed7aee80cc97f7ee52e302249e)** — the framework these repos implement
