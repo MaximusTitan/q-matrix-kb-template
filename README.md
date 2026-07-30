@@ -22,6 +22,10 @@ Forking the *structure* is free. What you put into your fork is a separate quest
 
 This repo is the data layer of the system described in *Curriculum Brain: A Semi-Automated Framework for Q-Matrix Creation* — [read the draft](https://prickly-gopher-95e.notion.site/Curriculum-Brain-3a3527ed7aee80cc97f7ee52e302249e).
 
+## Paper
+
+This repo implements the data schema and template described in *Curriculum Brain: A Semi-Automated Framework for Q-Matrix Creation* — [read the draft](https://prickly-gopher-95e.notion.site/Curriculum-Brain-3a3527ed7aee80cc97f7ee52e302249e).
+
 ---
 
 ## What Q-Matrix Does
